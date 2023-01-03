@@ -1,77 +1,91 @@
 package com.driver;
 
-import java.util.HashMap;
-import java.util.Map;
+public class BankAccount {
 
-public class CurrentAccount extends BankAccount{
-    String tradeLicenseId; //consists of Uppercase English characters only
+    private String name;
+    private double balance;
+    private double minBalance;
 
-    public CurrentAccount(String name, double balance, String tradeLicenseId) throws Exception {
-        // minimum balance is 5000 by default. If balance is less than 5000, throw "Insufficient Balance" exception
-    	super(name,balance,5000);
-    	if(balance<5000)
-    		throw new Exception("Insufficient Balance");
-    	
-        
-    	
-         this.tradeLicenseId=tradeLicenseId;
-         
+    public BankAccount(String name, double balance, double minBalance) {
+         this.name=name;
+         this.balance=balance;
+         this.minBalance=minBalance;
     }
 
-    public void validateLicenseId() throws Exception {
-        // A trade license Id is said to be valid if no two consecutive characters are same
-        // If the license Id is valid, do nothing
-        // If the characters of the license Id can be rearranged to create any valid license Id
-        // If it is not possible, throw "Valid License can not be generated" Exception
-    	boolean valid=false;
-        for(int i=0;i<tradeLicenseId.length()-1;i++)
-        {
-        	if(tradeLicenseId.charAt(i)!=tradeLicenseId.charAt(i+1))
-        		valid=true;
+    public String generateAccountNumber(int digits, int sum) throws Exception{
+        //Each digit of an account number can lie between 0 and 9 (both inclusive)
+        //Generate account number having given number of 'digits' such that the sum of digits is equal to 'sum'
+        //If it is not possible, throw "Account Number can not be generated" exception
+        String Accountno="";
+        int c=digits;
+        if(sum==0 || (sum/9<=digits))
+        {       
+        	throw new Exception("Account Number can not be generated");
         }
-        
-        if(valid==true)
-        {
-        	char[] ch= tradeLicenseId.toCharArray();
-        	if(isPossible(ch)==false)
-        		throw new Exception("Valid License can not be generated");
-        	else
-        		System.out.println("license Id is rearranged to create valid license Id successfully");
-        }
-        
         else
         {
-        	System.out.println("license Id  valid license Id ");
-        	
+        while(c!=0)//sum=80;c=10;
+        {   if(sum>9) {
+         	Accountno=Accountno+"9";//9999999980
+         	sum=sum-9;//71,62,53,44,35,26,17,8,0,0
+         	c--;  //9,8,7,6,5 ,4  ,3,2,1,0
+         	
+        }
+        else if(sum<9 && sum>0)
+        {
+        	Accountno=Accountno+sum;
+        	sum=0;
+        	c--;
+        }
+        else
+        {
+        	Accountno=Accountno+"0";
+        	c--;
+        }
+        }
+        }
+		return Accountno;
+    }
+
+    public void deposit(double amount) {
+        //add amount to balance
+         this.balance=this.balance+amount;
+         System.out.println("Amount deposited SuccessFully:"+balance);
+    }
+
+    public void withdraw(double amount) throws Exception {
+        // Remember to throw "Insufficient Balance" exception, if the remaining amount would be less than minimum balance
+        if(amount<minBalance)
+        	throw new Exception("Insufficient Balance");
+        else
+        {
+        	balance=balance-amount;
+        	System.out.println("Remaning Balnce is:"+balance);
         }
     }
-    
-    public boolean isPossible(char[] str)
-    {
- 
-      
-        Map<Character, Integer> freq = new HashMap<>();
- 
-      
-        int max_freq = 0;
-        for (int j = 0; j < (str.length); j++) {
-            if (freq.containsKey(str[j])) {
-                freq.put(str[j], freq.get(str[j]) + 1);
-                if (freq.get(str[j]) > max_freq)
-                    max_freq = freq.get(str[j]);
-            }
-            else {
-                freq.put(str[j], 1);
-                if (freq.get(str[j]) > max_freq)
-                    max_freq = freq.get(str[j]);
-            }
-        }
- 
-        // If possible
-        if (max_freq <= (str.length - max_freq + 1))
-            return true;
-        return false;
-    }
- 
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+
+	public double getMinBalance() {
+		return minBalance;
+	}
+
+	public void setMinBalance(double minBalance) {
+		this.minBalance = minBalance;
+	}
 
 }
